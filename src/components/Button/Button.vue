@@ -3,8 +3,8 @@
     ref="_ref"
     class="pp-button"
     :class="{
-      [`pp-button-${type}`]: type,
-      [`pp-button-${size}`]: size,
+      [`pp-button--${type}`]: type,
+      [`pp-button--${size}`]: size,
       'is-plain': plain,
       'is-disabled': disabled,
       'is-round': round,
@@ -31,4 +31,4 @@ withDefaults(defineProps<ButtonProps>(), {
 const _ref = ref(null)
 defineExpose({ ref: _ref })
 </script>
-<style scoped></style>
+<style></style>
