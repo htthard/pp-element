@@ -4,6 +4,8 @@ defineOptions({
 })
 
 import Button from '@/components/Button/Button.vue'
+import Collapse from '@/components/Collapse/Collapse.vue'
+import Item from '@/components/Collapse/CollapseItem.vue'
 import { onMounted, ref } from 'vue'
 import type { ButtonInstance } from '@/components/Button/types'
 
@@ -14,7 +16,10 @@ onMounted(() => {
     console.log(btnRef.value.ref)
   }
 })
-
+const openValues = ref(['a'])
+setTimeout(() => {
+  openValues.value = ['a', 'b']
+}, 2000)
 const handelClick = () => {
   console.log('click')
 }
@@ -38,6 +43,23 @@ const handelClick = () => {
     <Button type="danger" plain>Danger</Button><br /><br />
     <Button size="large">Large</Button>
     <Button size="small">Small</Button><br /><br />
+
+    <Collapse v-model="openValues" accordion>
+      <Item name="a">
+        <template #title>
+          <div>custom Title</div>
+        </template>
+        <div>content content content</div>
+      </Item>
+      <Item name="b" title="title11">
+        <div>content111 content content</div>
+      </Item>
+      <Item name="c" title="title22" :disabled="true">
+        <div>content111222 content content</div>
+      </Item>
+    </Collapse>
+
+    {{ openValues }}
   </section>
 </template>
 
