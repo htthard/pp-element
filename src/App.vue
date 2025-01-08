@@ -58,8 +58,6 @@ const handelClick = () => {
         <div>content111222 content content</div>
       </Item>
     </Collapse>
-
-    {{ openValues }}
   </section>
 </template>
 
