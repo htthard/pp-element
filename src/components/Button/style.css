@@ -81,7 +81,7 @@
     background-color: var(--pp-button-disabled-bg-color);
     border-color: var(--pp-button-disabled-border-color);
   }
-  [class*='vk-icon'] + span {
+  [class*='pp-icon'] + span {
     margin-left: 6px;
   }
 }
