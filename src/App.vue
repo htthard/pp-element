@@ -7,6 +7,7 @@ import Button from '@/components/Button/Button.vue'
 import Collapse from '@/components/Collapse/Collapse.vue'
 import Icon from '@/components/Icon/Icon.vue'
 import Item from '@/components/Collapse/CollapseItem.vue'
+import Alert from '@/components/Alert/Alert.vue'
 import { onMounted, ref } from 'vue'
 import type { ButtonInstance } from '@/components/Button/types'
 
@@ -21,6 +22,10 @@ const openValues = ref(['a'])
 
 const handelClick = () => {
   // console.log('click')
+}
+
+const handleAlertClose = () => {
+  console.log('close')
 }
 </script>
 <template>
@@ -61,6 +66,8 @@ const handelClick = () => {
     </Collapse>
 
     <Icon icon="fa-solid fa-i-cursor fa-fade" type="danger" color="blue"></Icon>
+
+    <Alert title="alert title" @close="handleAlertClose"></Alert>
   </section>
 </template>
 
