@@ -29,7 +29,7 @@ const handleItemClick = (name: NameType) => {
       activeNames.value.push(name)
     }
   }
-  emits('change', activeNames.value)
+  emits('change', [...activeNames.value])
 }
 
 provide(CollapseContextKey, {

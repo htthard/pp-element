@@ -60,7 +60,7 @@ const handleAlertClose = () => {
       <Item name="b" title="title11">
         <div>content111 content content</div>
       </Item>
-      <Item name="c" title="title22" :disabled="true">
+      <Item name="c" title="title22" disabled>
         <div>content111222 content content</div>
       </Item>
     </Collapse>
