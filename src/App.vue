@@ -2,16 +2,30 @@
 defineOptions({
   name: 'PpButton',
 })
-
+import type { Options } from '@popperjs/core'
+import Tooltip from './components/Tooltip/Tooltip.vue'
 import Button from '@/components/Button/Button.vue'
 import Collapse from '@/components/Collapse/Collapse.vue'
 import Icon from '@/components/Icon/Icon.vue'
 import Item from '@/components/Collapse/CollapseItem.vue'
 import Alert from '@/components/Alert/Alert.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { ButtonInstance } from '@/components/Button/types'
+import type { TooltipInstance } from './components/Tooltip/types'
 
 const btnRef = ref<ButtonInstance | null>(null)
+const triggerEvent = ref<any>('click')
+const TooltipRef = ref<TooltipInstance>()
+const tooltipOptions = reactive<Partial<Options>>({
+  placement: 'right-end',
+  strategy: 'fixed',
+})
+const openTooltip = () => {
+  TooltipRef.value?.show()
+}
+const closeTooltip = () => {
+  TooltipRef.value?.hide()
+}
 
 onMounted(() => {
   if (btnRef.value) {
@@ -29,9 +43,15 @@ const handleAlertClose = () => {
 }
 </script>
 <template>
+  <header>
+    <Tooltip content="content tt" :trigger="triggerEvent" placement="right" ref="TooltipRef">
+      <img src="./assets/logo.svg" alt="logo" width="125" height="125" />
+      <template #content> content 1212 </template>
+    </Tooltip>
+  </header>
   <section>
-    <Button ref="btnRef" type="primary" size="large" plain disabled>Test Button</Button>
-    <Button plain>Plain Button</Button>
+    <Button @click="openTooltip" ref="btnRef" type="primary" size="large" plain>Test Button</Button>
+    <Button @click="closeTooltip" plain>Plain Button</Button>
     <Button round>Round Button</Button>
     <Button circle>round-button</Button>
     <Button disabled>Disabled Button</Button><br /><br />
