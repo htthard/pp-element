@@ -23,8 +23,8 @@ import { debounce } from 'lodash-es'
 const props = withDefaults(defineProps<TooltipProps>(), {
   placement: 'bottom',
   transition: 'fade',
-  openDelay: 1000,
-  closeDelay: 1000,
+  openDelay: 500,
+  closeDelay: 500,
 })
 const popperOptions = computed(() => ({
   placement: props.placement,

@@ -4,14 +4,16 @@ defineOptions({
 })
 import type { Options } from '@popperjs/core'
 import Tooltip from './components/Tooltip/Tooltip.vue'
+import Dropdown from './components/Dropdown/Dropdown.vue'
 import Button from '@/components/Button/Button.vue'
 import Collapse from '@/components/Collapse/Collapse.vue'
 import Icon from '@/components/Icon/Icon.vue'
 import Item from '@/components/Collapse/CollapseItem.vue'
 import Alert from '@/components/Alert/Alert.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { h, onMounted, reactive, ref } from 'vue'
 import type { ButtonInstance } from '@/components/Button/types'
 import type { TooltipInstance } from './components/Tooltip/types'
+import type { MenuOption } from './components/Dropdown/types'
 
 const btnRef = ref<ButtonInstance | null>(null)
 const triggerEvent = ref<any>('click')
@@ -41,13 +43,20 @@ const handelClick = () => {
 const handleAlertClose = () => {
   console.log('close')
 }
+
+const menuOptions: MenuOption[] = [
+  { label: h('b', 'this is menu1'), key: '1' },
+  { label: 'menu2', key: '2', disabled: true },
+  { label: 'menu3', key: '3', divided: true },
+  { label: 'menu4', key: '4' },
+]
 </script>
 <template>
   <header>
-    <Tooltip content="content tt" :trigger="triggerEvent" placement="right" ref="TooltipRef">
+    <Dropdown content="content tt" :trigger="triggerEvent" :menu-options="menuOptions">
       <img src="./assets/logo.svg" alt="logo" width="125" height="125" />
       <template #content> content 1212 </template>
-    </Tooltip>
+    </Dropdown>
   </header>
   <section>
     <Button @click="openTooltip" ref="btnRef" type="primary" size="large" plain>Test Button</Button>
