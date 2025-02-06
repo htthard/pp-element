@@ -4,6 +4,7 @@ defineOptions({
 })
 import type { Options } from '@popperjs/core'
 import Tooltip from './components/Tooltip/Tooltip.vue'
+import Message from './components/Message/Message.vue'
 import Dropdown from './components/Dropdown/Dropdown.vue'
 import Button from '@/components/Button/Button.vue'
 import Collapse from '@/components/Collapse/Collapse.vue'
@@ -14,6 +15,7 @@ import { h, onMounted, reactive, ref } from 'vue'
 import type { ButtonInstance } from '@/components/Button/types'
 import type { TooltipInstance } from './components/Tooltip/types'
 import type { MenuOption } from './components/Dropdown/types'
+import { createMessage } from './components/Message/method'
 
 const btnRef = ref<ButtonInstance | null>(null)
 const triggerEvent = ref<any>('click')
@@ -30,9 +32,10 @@ const closeTooltip = () => {
 }
 
 onMounted(() => {
-  if (btnRef.value) {
-    // console.log(btnRef.value.ref)
-  }
+  createMessage({ message: 'hello message', duration: 0 })
+  createMessage({ message: 'hello message1', duration: 0 })
+  createMessage({ message: 'hello message2', duration: 0 })
+  createMessage({ message: 'hello message3', duration: 0 })
 })
 const openValues = ref(['a'])
 
@@ -52,6 +55,7 @@ const menuOptions: MenuOption[] = [
 ]
 </script>
 <template>
+  <!-- <Message message="hello message" show-close :duration="0"></Message> -->
   <header>
     <Dropdown content="content tt" :trigger="triggerEvent" :menu-options="menuOptions">
       <img src="./assets/logo.svg" alt="logo" width="125" height="125" />
