@@ -32,10 +32,14 @@ const closeTooltip = () => {
 }
 
 onMounted(() => {
-  createMessage({ message: 'hello message', duration: 0 })
-  createMessage({ message: 'hello message1', duration: 0 })
-  createMessage({ message: 'hello message2', duration: 0 })
-  createMessage({ message: 'hello message3', duration: 0 })
+  // const instance = createMessage({ message: 'hello message', duration: 0 })
+  createMessage({ message: 'hello message', duration: 3000, type: 'success' })
+  createMessage({ message: 'hello message1', duration: 0, type: 'error' })
+  createMessage({ message: 'hello message2', duration: 0, type: 'warning' })
+
+  setTimeout(() => {
+    // instance.destroy()
+  }, 2000)
 })
 const openValues = ref(['a'])
 

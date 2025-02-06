@@ -1,5 +1,4 @@
-import type { offset } from "@popperjs/core";
-import type { ComponentInternalInstance, VNode } from "vue";
+import type { ComponentInternalInstance, VNode } from 'vue'
 
 export interface MessageProps {
   message?: string | VNode
@@ -9,6 +8,8 @@ export interface MessageProps {
   onDestroy: () => void
   offset?: number
   id: string
+  zIndex: number
+  transitionName?: string
 }
 
 export interface MessageContext {
@@ -16,6 +17,7 @@ export interface MessageContext {
   vnode: VNode
   vm: ComponentInternalInstance
   props: MessageProps
+  destroy: () => void
 }
 
-export type CreateMessageProps = Omit<MessageProps, 'onDestroy' | 'id'>
+export type CreateMessageProps = Omit<MessageProps, 'onDestroy' | 'id' | 'zIndex'>
