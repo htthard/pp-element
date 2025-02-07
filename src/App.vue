@@ -53,8 +53,21 @@ const menuOptions: MenuOption[] = [
   { label: 'menu3', key: '3', divided: true },
   { label: 'menu4', key: '4' },
 ]
+
+
+const num = reactive([1])
+const getNum = () => {
+  console.log(num)
+}
+getNum()
+
+setTimeout(() => {
+  num.push(2)
+}, 3000);
+
 </script>
 <template>
+  {{ num }}
   <!-- <Message message="hello message" show-close :duration="0"></Message> -->
   <header>
     <Dropdown content="content tt" :trigger="triggerEvent" :menu-options="menuOptions">
