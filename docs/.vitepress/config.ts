@@ -1,12 +1,32 @@
 import { defineConfig } from 'vitepress'
-
+import { fileURLToPath, URL } from 'node:url'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import { containerPreview, componentPreview } from '@vitepress-demo-preview/plugin'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'toy element',
+  title: 'My Awesome Project',
   description: 'A VitePress Site',
+  vite: {
+
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('../../src', import.meta.url)),
+      },
+    },
+  },
+  markdown: {
+    config(md) {
+      md.use(containerPreview)
+      md.use(componentPreview)
+    },
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    nav: [{ text: 'Home', link: '/' }],
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: 'Examples', link: '/markdown-examples' },
+      { text: 'Test', link: '/markdown-examples' },
+    ],
 
     sidebar: [
       {
@@ -14,11 +34,12 @@ export default defineConfig({
         items: [
           { text: 'Markdown Examples', link: '/markdown-examples' },
           { text: 'Runtime API Examples', link: '/api-examples' },
+          { text: 'Test here', link: '/api-examples' },
         ],
       },
       {
         text: 'Basic',
-        items: [{ text: 'Button 按钮', link: '/components/button' }],
+        items: [{ text: 'Button', link: '/components/button' }],
       },
     ],
 

@@ -42,13 +42,18 @@
           :form="form"
         />
         <!-- suffix slot -->
-        <span v-if="slots.suffix || showClear || showPasswordArea" class="pp-input__suffix">
+        <span
+          v-if="slots.suffix || showClear || showPasswordArea"
+          class="pp-input__suffix"
+          @click="keepFocus"
+        >
           <slot name="suffix" />
           <Icon
             v-if="showClear"
             icon="circle-xmark"
             class="pp-input__clear"
             @click.native="clear"
+            @mousedown.prevent=""
           />
           <Icon
             v-if="showPasswordArea && pwdVisible"
@@ -92,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useAttrs, useSlots, watch } from 'vue'
+import { computed, nextTick, ref, useAttrs, useSlots, watch } from 'vue'
 import type { InputProps, InputEmits } from './types'
 import Icon from '../Icon/Icon.vue'
 
@@ -154,6 +159,13 @@ const clear = () => {
 const pwdVisible = ref(false)
 const togglePwdVisible = () => {
   pwdVisible.value = !pwdVisible.value
+}
+
+const keepFocus = async () => {
+  await nextTick()
+  if (inputRef.value) {
+    inputRef.value.focus()
+  }
 }
 
 const inputRef = ref<HTMLInputElement | null>(null)
