@@ -9,6 +9,7 @@
     <Tooltip
       ref="tooltipRef"
       placement="bottom-start"
+      :popper-options="popperOptions"
       manual
       :close-delay="0"
       :open-delay="0"
@@ -17,6 +18,7 @@
         v-model="states.inputValue"
         :disabled="disabled"
         :placeholder="placeholder"
+        readonly
       />
       <template #content>
         <ul class="pp-select__menu">
@@ -28,7 +30,6 @@
               @click.stop="itemSelect(item)"
             >
               {{ item.label }}
-              <span v-if="item.value === states.selectedOption?.value">selected</span>
             </li>
           </template>
         </ul>
@@ -39,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import Input from '../Input/Input.vue';
 import Tooltip from '../Tooltip/Tooltip.vue';
 import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types';
@@ -52,13 +53,31 @@ defineOptions({ name: 'PPSelect' })
 const props = defineProps<SelectProps>()
 const emits = defineEmits<SelectEmits>()
 const initialOption = findOption(props.modelValue)
-const innerValue = ref(initialOption ? initialOption.label : '')
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
   selectedOption: initialOption
 })
 const tooltipRef = ref<TooltipInstance>()
 const isDropdownValue = ref(false)
+const popperOptions: any = {
+  modifiers: [
+    {
+      name: 'offset',
+      options: {
+        offset: [0, 9],
+      },
+    },
+    {
+      name: 'sameWidth',
+      enabled: true,
+      fn: ({ state }: { state: any}) => {
+        state.styles.popper.width = `${state.rects.reference.width}px`
+      },
+      phase: 'beforeWrite',
+      requires: ['computeStyles'],
+    }
+  ],
+}
 const controlDropdown = (show: boolean) => {
   if (show) {
     tooltipRef.value?.show()
