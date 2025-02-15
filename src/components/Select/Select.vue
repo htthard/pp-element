@@ -2,7 +2,7 @@
   <div
     class="pp-select"
     :class="{
-      'is-disabled': disabled
+      'is-disabled': disabled,
     }"
     @click="toggleDropdown"
   >
@@ -13,19 +13,32 @@
       manual
       :close-delay="0"
       :open-delay="0"
+      @click-outside="controlDropdown(false)"
     >
       <Input
+        ref="inputRef"
         v-model="states.inputValue"
         :disabled="disabled"
         :placeholder="placeholder"
         readonly
-      />
+      >
+        <template #suffix>
+          <Icon
+            icon="angle-down"
+            class="header-angle"
+            :class="{ 'is-active': isDropdownValue }"
+          ></Icon>
+        </template>
+      </Input>
       <template #content>
         <ul class="pp-select__menu">
           <template v-for="(item, index) of options" :key="index">
             <li
               class="pp-select__menu-item"
-              :class="{ 'is-disabled': item.disabled, 'is-selected': item.value === states.selectedOption?.value }"
+              :class="{
+                'is-disabled': item.disabled,
+                'is-selected': item.value === states.selectedOption?.value,
+              }"
               :id="`select-item-${item.value}`"
               @click.stop="itemSelect(item)"
             >
@@ -35,19 +48,20 @@
         </ul>
       </template>
     </Tooltip>
-  
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-import Input from '../Input/Input.vue';
-import Tooltip from '../Tooltip/Tooltip.vue';
-import type { SelectEmits, SelectOption, SelectProps, SelectStates } from './types';
-import type { TooltipInstance } from '../Tooltip/types';
+import { computed, reactive, ref } from 'vue'
+import Input from '../Input/Input.vue'
+import Icon from '../Icon/Icon.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
+import type { SelectEmits, SelectOption, SelectProps, SelectStates, SelectValue } from './types'
+import type { TooltipInstance } from '../Tooltip/types'
+import type { InputInstance } from '../Input/types'
 
-const findOption = (value: string) => {
-  return props.options.find(item => item.value === value) || null
+const findOption = (value: SelectValue) => {
+  return props.options.find((item) => item.value === value) || null
 }
 defineOptions({ name: 'PPSelect' })
 const props = defineProps<SelectProps>()
@@ -55,9 +69,10 @@ const emits = defineEmits<SelectEmits>()
 const initialOption = findOption(props.modelValue)
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
-  selectedOption: initialOption
+  selectedOption: initialOption,
 })
 const tooltipRef = ref<TooltipInstance>()
+const inputRef = ref<InputInstance>()
 const isDropdownValue = ref(false)
 const popperOptions: any = {
   modifiers: [
@@ -70,12 +85,12 @@ const popperOptions: any = {
     {
       name: 'sameWidth',
       enabled: true,
-      fn: ({ state }: { state: any}) => {
+      fn: ({ state }: { state: any }) => {
         state.styles.popper.width = `${state.rects.reference.width}px`
       },
       phase: 'beforeWrite',
       requires: ['computeStyles'],
-    }
+    },
   ],
 }
 const controlDropdown = (show: boolean) => {
@@ -103,8 +118,6 @@ const itemSelect = (e: SelectOption) => {
   controlDropdown(false)
   emits('update:modelValue', e.value)
   emits('change', e.value)
+  inputRef.value?.ref.focus()
 }
- 
-
-
 </script>

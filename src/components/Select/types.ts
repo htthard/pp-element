@@ -1,19 +1,20 @@
+export type SelectValue = string | number
 export interface SelectOption {
   label: string
-  value: string
+  value: SelectValue
   disabled?: boolean
 }
 
 export interface SelectProps {
-  modelValue: string
+  modelValue: SelectValue
   options: SelectOption[]
   placeholder?: string
   disabled?: boolean
 }
 
 export interface SelectEmits {
-  (e: 'update:modelValue', value: string): void
-  (e: 'change', value: string): void
+  (e: 'update:modelValue', value: SelectValue): void
+  (e: 'change', value: SelectValue): void
   (e: 'visible-change', value: boolean): void
 }
 
