@@ -24,6 +24,7 @@
         :placeholder="filteredPlaceholder"
         :readonly="!filterable || !isDropdownValue"
         @input="debounceOnFilter"
+        @keydown="handleKeyDown"
       >
         <template #suffix>
           <Icon
@@ -55,6 +56,7 @@
               :class="{
                 'is-disabled': item.disabled,
                 'is-selected': item.value === states.selectedOption?.value,
+                'is-highlight': index === states.highlightIndex,
               }"
               :id="`select-item-${item.value}`"
               @click.stop="itemSelect(item)"
@@ -94,7 +96,14 @@ const states = reactive<SelectStates>({
   selectedOption: initialOption,
   mouseHover: false,
   loading: false,
+  highlightIndex: -1,
 })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    states.inputValue = findOption(newValue)?.label || ''
+  },
+)
 const clearIconShow = computed(() => {
   return (
     props.clearable && states.mouseHover && states.selectedOption && states.inputValue.trim() !== ''
@@ -154,6 +163,7 @@ const generateFilterOptions = async (e: string) => {
   } else {
     filterOptions.value = props.options.filter((item) => item.label.includes(e))
   }
+  states.highlightIndex = -1
 }
 const onFilter = () => {
   generateFilterOptions(states.inputValue)
@@ -179,6 +189,7 @@ const controlDropdown = (show: boolean) => {
     if (props.filterable) {
       states.inputValue = states.selectedOption ? states.selectedOption.label : ''
     }
+    states.highlightIndex = -1
   }
   isDropdownValue.value = show
   emits('visible-change', show)
@@ -200,5 +211,51 @@ const itemSelect = (e: SelectOption) => {
   emits('update:modelValue', e.value)
   emits('change', e.value)
   inputRef.value?.ref.focus()
+}
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  switch (e.key) {
+    case 'Enter':
+      if (!isDropdownValue.value) {
+        controlDropdown(true)
+      } else {
+        if (states.highlightIndex > -1 && filterOptions.value[states.highlightIndex]) {
+          itemSelect(filterOptions.value[states.highlightIndex])
+        } else {
+          controlDropdown(false)
+        }
+      }
+      break
+    case 'Escape':
+      if (isDropdownValue.value) {
+        controlDropdown(false)
+      }
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      if (filterOptions.value.length > 0) {
+        if (states.highlightIndex === -1 || states.highlightIndex === 0) {
+          states.highlightIndex = filterOptions.value.length - 1
+        } else {
+          states.highlightIndex--
+        }
+      }
+      break
+    case 'ArrowDown':
+      e.preventDefault()
+      if (filterOptions.value.length > 0) {
+        if (
+          states.highlightIndex === -1 ||
+          states.highlightIndex === filterOptions.value.length - 1
+        ) {
+          states.highlightIndex = 0
+        } else {
+          states.highlightIndex++
+        }
+      }
+      break
+    default:
+      break
+  }
 }
 </script>

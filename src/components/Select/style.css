@@ -63,6 +63,9 @@
       color: var(--pp-select-item-selected-font-color);
       font-weight: 700;
     }
+    &.is-highlight {
+      background-color: var(--pp-select-item-hover-bg-color);
+    }
     &.is-disabled {
       color: var(--pp-select-item-disabled-font-color);
       cursor: not-allowed;
