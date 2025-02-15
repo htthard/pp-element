@@ -5,6 +5,8 @@
       'is-disabled': disabled,
     }"
     @click="toggleDropdown"
+    @mouseenter="states.mouseHover = true"
+    @mouseleave="states.mouseHover = false"
   >
     <Tooltip
       ref="tooltipRef"
@@ -24,6 +26,14 @@
       >
         <template #suffix>
           <Icon
+            v-if="clearIconShow"
+            @click.stop="onClear"
+            @mousedown.prevent=""
+            icon="circle-xmark"
+            class="pp-input__clear"
+          ></Icon>
+          <Icon
+            v-else
             icon="angle-down"
             class="header-angle"
             :class="{ 'is-active': isDropdownValue }"
@@ -70,7 +80,20 @@ const initialOption = findOption(props.modelValue)
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
   selectedOption: initialOption,
+  mouseHover: false,
 })
+const clearIconShow = computed(() => {
+  return (
+    props.clearable && states.mouseHover && states.selectedOption && states.inputValue.trim() !== ''
+  )
+})
+const onClear = () => {
+  states.inputValue = ''
+  states.selectedOption = null
+  emits('clear')
+  emits('change', '')
+  emits('update:modelValue', '')
+}
 const tooltipRef = ref<TooltipInstance>()
 const inputRef = ref<InputInstance>()
 const isDropdownValue = ref(false)
