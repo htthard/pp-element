@@ -1,3 +1,5 @@
+import type { VNode } from 'vue'
+
 export type SelectValue = string | number
 export interface SelectOption {
   label: string
@@ -11,7 +13,10 @@ export interface SelectProps {
   placeholder?: string
   disabled?: boolean
   clearable?: boolean
+  renderLabel?: RenderLabelFunc
 }
+
+type RenderLabelFunc = (option: SelectOption) => VNode
 
 export interface SelectEmits {
   (e: 'update:modelValue', value: SelectValue): void
