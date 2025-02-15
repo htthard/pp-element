@@ -21,8 +21,9 @@
         ref="inputRef"
         v-model="states.inputValue"
         :disabled="disabled"
-        :placeholder="placeholder"
-        readonly
+        :placeholder="filteredPlaceholder"
+        :readonly="!filterable || !isDropdownValue"
+        @input="onFilter"
       >
         <template #suffix>
           <Icon
@@ -42,7 +43,7 @@
       </Input>
       <template #content>
         <ul class="pp-select__menu">
-          <template v-for="(item, index) of options" :key="index">
+          <template v-for="(item, index) of filterOptions" :key="index">
             <li
               class="pp-select__menu-item"
               :class="{
@@ -62,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import Input from '../Input/Input.vue'
 import Icon from '../Icon/Icon.vue'
 import Tooltip from '../Tooltip/Tooltip.vue'
@@ -70,6 +71,7 @@ import RenderVNode from '../Common/RenderVNode'
 import type { SelectEmits, SelectOption, SelectProps, SelectStates, SelectValue } from './types'
 import type { TooltipInstance } from '../Tooltip/types'
 import type { InputInstance } from '../Input/types'
+import { filter, isFunction } from 'lodash-es'
 
 const findOption = (value: SelectValue) => {
   return props.options.find((item) => item.value === value) || null
@@ -117,11 +119,43 @@ const popperOptions: any = {
     },
   ],
 }
+
+const filterOptions = ref(props.options)
+watch(
+  () => props.options,
+  (newVal) => {
+    filterOptions.value = newVal
+  },
+)
+const generateFilterOptions = (e: string) => {
+  if (!props.filterable) return
+  if (props.filterMethod && isFunction(props.filterMethod)) {
+    filterOptions.value = props.filterMethod(e)
+  } else {
+    filterOptions.value = props.options.filter((item) => item.label.includes(e))
+  }
+}
+const onFilter = () => {
+  generateFilterOptions(states.inputValue)
+}
+const filteredPlaceholder = computed(() => {
+  if (props.filterable && states.selectedOption && isDropdownValue.value) {
+    return states.selectedOption.label
+  }
+  return props.placeholder
+})
 const controlDropdown = (show: boolean) => {
   if (show) {
+    if (props.filterable && states.selectedOption) {
+      states.inputValue = ''
+      generateFilterOptions('')
+    }
     tooltipRef.value?.show()
   } else {
     tooltipRef.value?.hide()
+    if (props.filterable) {
+      states.inputValue = states.selectedOption ? states.selectedOption.label : ''
+    }
   }
   isDropdownValue.value = show
   emits('visible-change', show)

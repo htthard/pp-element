@@ -14,9 +14,12 @@ export interface SelectProps {
   disabled?: boolean
   clearable?: boolean
   renderLabel?: RenderLabelFunc
+  filterable?: boolean
+  filterMethod?: FilterFunc
 }
 
 type RenderLabelFunc = (option: SelectOption) => VNode
+type FilterFunc = (query: SelectValue) => SelectOption[]
 
 export interface SelectEmits {
   (e: 'update:modelValue', value: SelectValue): void
