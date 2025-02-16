@@ -97,9 +97,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useAttrs, useSlots, watch } from 'vue'
+import { computed, inject, nextTick, ref, useAttrs, useSlots, watch } from 'vue'
 import type { InputProps, InputEmits } from './types'
 import Icon from '../Icon/Icon.vue'
+import { formItemContextKey } from '../Form/types'
 
 defineOptions({
   name: 'Input',
@@ -115,9 +116,11 @@ const props = withDefaults(defineProps<InputProps>(), {
   form: '',
 })
 
+const formItemContext = inject(formItemContextKey)
+
 const emit = defineEmits<InputEmits>()
-const attrs = useAttrs()
-const slots = useSlots()
+const attrs = useAttrs() as any
+const slots = useSlots() as any
 const innerValue = ref(props.modelValue)
 watch(
   () => props.modelValue,
@@ -148,6 +151,7 @@ const handleFocus = (e: FocusEvent) => {
 const handleBlur = (e: FocusEvent) => {
   isFocus.value = false
   emit('blur', e)
+  formItemContext?.validate()
 }
 const clear = () => {
   emit('update:modelValue', '')

@@ -1,17 +1,87 @@
 <template>
-  <div class="pp-form-item">
+  <div
+    class="pp-form-item"
+    :class="{
+      'is-loading': validateStates.loading,
+      'is-success': validateStates.state === 'success',
+      'is-error': validateStates.state === 'error',
+    }"
+  >
     <label class="pp-form-item__label">
       <slot name="label" :label="label">
         {{ label }}
       </slot>
     </label>
     <div class="pp-form-item__content">
-      <slot></slot>
+      <slot :validate="validate"></slot>
+      <div class="pp-form-item__error-msg" v-if="validateStates.state === 'error'">
+        {{ validateStates.errorMsg }}
+      </div>
     </div>
+    <button @click.prevent="validate">validate</button>
   </div>
 </template>
 <script setup lang="ts">
-import type { FormItemProps } from './types'
+import { computed, inject, provide, reactive } from 'vue'
+import {
+  formContextKey,
+  formItemContextKey,
+  type FormItemProps,
+  type FormValidateFailure,
+} from './types'
+import { isNil } from 'lodash-es'
+import Schema from 'async-validator'
 defineOptions({ name: 'PpFormItem' })
-defineProps<FormItemProps>()
+const props = defineProps<FormItemProps>()
+
+const formContext = inject(formContextKey)
+const innerValue = computed(() => {
+  const model = formContext?.model
+  if (model && props.prop && !isNil(model[props.prop])) {
+    return model[props.prop]
+  } else {
+    return null
+  }
+})
+const itemRules = computed(() => {
+  const rules = formContext?.rules
+  if (rules && props.prop && !isNil(rules[props.prop])) {
+    return rules[props.prop]
+  } else {
+    return []
+  }
+})
+
+const validateStates = reactive({
+  state: 'init',
+  errorMsg: '',
+  loading: false,
+})
+
+const validate = () => {
+  const propName = props.prop
+  if (propName) {
+    const validator = new Schema({
+      [propName]: itemRules.value,
+    })
+    validateStates.loading = true
+    validator
+      .validate({ [propName]: innerValue.value })
+      .then(() => {
+        validateStates.state = 'success'
+      })
+      .catch((err: FormValidateFailure) => {
+        const { errors } = err
+        validateStates.state = 'error'
+        validateStates.errorMsg = errors && errors.length > 0 ? errors[0].message || '' : ''
+      })
+      .finally(() => {
+        validateStates.loading = false
+      })
+  }
+}
+
+provide(formItemContextKey, {
+  validate,
+})
 </script>

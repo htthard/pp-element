@@ -8,24 +8,31 @@ import { reactive } from 'vue'
 const formData = reactive({
   email: '',
   password: '',
+  test: '',
 })
 const rules = {
-  email: [{ required: true, message: '请输入邮箱地址', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  email: [{ required: true, type: 'email', trigger: 'blur' }],
+  password: [{ required: true, trigger: 'blur' }],
+  test: [{ required: true, trigger: 'blur' }],
 }
 </script>
 
 <template>
   <Form :model="formData" :rules="rules">
-    <FormItem label="the email">
+    <FormItem label="the email" prop="email">
       <Input v-model="formData.email" />
     </FormItem>
-    <FormItem label="the password">
+    <FormItem label="the password" prop="password">
       <template #label="{ label }">
         <Button>{{ label }}</Button>
       </template>
 
       <Input type="password" v-model="formData.password" />
+    </FormItem>
+    <FormItem label="the test" prop="test">
+      <template #default="{ validate }">
+        <input type="text" v-model="formData.test" @blur="validate"
+      /></template>
     </FormItem>
     <div>
       <Button type="primary">Submit</Button>
