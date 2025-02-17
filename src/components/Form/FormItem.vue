@@ -21,10 +21,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, inject, provide, reactive } from 'vue'
+import { computed, inject, onMounted, onUnmounted, provide, reactive } from 'vue'
 import {
   formContextKey,
   formItemContextKey,
+  type FormItemContext,
   type FormItemProps,
   type FormValidateFailure,
 } from './types'
@@ -78,7 +79,7 @@ const validate = (trigger?: string) => {
       [propName]: triggerRules,
     })
     validateStates.loading = true
-    validator
+    return validator
       .validate({ [propName]: innerValue.value })
       .then(() => {
         validateStates.state = 'success'
@@ -87,6 +88,7 @@ const validate = (trigger?: string) => {
         const { errors } = err
         validateStates.state = 'error'
         validateStates.errorMsg = errors && errors.length > 0 ? errors[0].message || '' : ''
+        return Promise.reject(err)
       })
       .finally(() => {
         validateStates.loading = false
@@ -94,7 +96,19 @@ const validate = (trigger?: string) => {
   }
 }
 
-provide(formItemContextKey, {
-  validate,
+const context: FormItemContext = {
+  prop: props.prop || '',
+  validate
+}
+
+provide(formItemContextKey, context)
+
+onMounted(() => {
+  if (props.prop) {
+    formContext?.addField(context)
+  }
+})
+onUnmounted(() => {
+  formContext?.removeField(context)
 })
 </script>
