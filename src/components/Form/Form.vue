@@ -1,6 +1,5 @@
 <template>
   <form class="pp-form">
-    <button @click.prevent="validate">validate all</button>
     <slot></slot>
   </form>
 </template>

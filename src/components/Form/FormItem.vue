@@ -5,6 +5,7 @@
       'is-loading': validateStates.loading,
       'is-success': validateStates.state === 'success',
       'is-error': validateStates.state === 'error',
+      'is-required': isRequired
     }"
   >
     <label class="pp-form-item__label">
@@ -51,6 +52,9 @@ const itemRules = computed(() => {
   } else {
     return []
   }
+})
+const isRequired = computed(() => {
+  return itemRules.value.some(rule => rule.required)
 })
 
 const validateStates = reactive({
