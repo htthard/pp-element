@@ -27,8 +27,10 @@ import {
   formContextKey,
   formItemContextKey,
   type FormItemContext,
+  type FormItemInstance,
   type FormItemProps,
   type FormValidateFailure,
+  type ValidateStatesProps,
 } from './types'
 import { isNil } from 'lodash-es'
 import Schema from 'async-validator'
@@ -57,7 +59,7 @@ const isRequired = computed(() => {
   return itemRules.value.some(rule => rule.required)
 })
 
-const validateStates = reactive({
+const validateStates: ValidateStatesProps = reactive({
   state: 'init',
   errorMsg: '',
   loading: false,
@@ -75,7 +77,7 @@ const getTriggerRules = (trigger?: string) => {
   }
 }
 
-const validate = (trigger?: string) => {
+const validate = async (trigger?: string) => {
   const propName = props.prop
   const triggerRules = getTriggerRules(trigger)
   if (triggerRules.length === 0) return true
@@ -132,5 +134,12 @@ onMounted(() => {
 })
 onUnmounted(() => {
   formContext?.removeField(context)
+})
+
+defineExpose<FormItemInstance>({
+  validateStates,
+  validate,
+  resetField,
+  clearValidate
 })
 </script>

@@ -8,12 +8,14 @@ import { reactive, ref } from 'vue'
 const formData = reactive({
   email: '1',
   password: '1',
-  test: '',
+  confirmPwd: '',
 })
 const rules = {
   email: [{ required: true, trigger: 'blur' }],
   password: [{ required: true, trigger: 'blur' }],
-  test: [{ required: true, trigger: 'blur' }],
+  confirmPwd: [{ required: true, trigger: 'blur' }, {
+    validator: (rule, value) => value === formData.password, trigger: 'blur', message: '两次密码必须一致'
+  }],
 }
 
 const formRef = ref()
@@ -36,16 +38,10 @@ const reset = () => {
       <Input v-model="formData.email" />
     </FormItem>
     <FormItem label="the password" prop="password">
-      <template #label="{ label }">
-        <Button>{{ label }}</Button>
-      </template>
-
       <Input type="password" v-model="formData.password" />
     </FormItem>
-    <FormItem label="the test" prop="test">
-      <template #default="{ validate }">
-        <input type="text" v-model="formData.test" @blur="validate"
-      /></template>
+    <FormItem label="the confirm pwd" prop="confirmPwd">
+      <Input type="password" v-model="formData.confirmPwd" />
     </FormItem>
     <div>
       <Button type="primary" @click.prevent="validate">Submit</Button>

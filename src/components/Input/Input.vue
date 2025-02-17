@@ -117,6 +117,9 @@ const props = withDefaults(defineProps<InputProps>(), {
 })
 
 const formItemContext = inject(formItemContextKey)
+const runValidate = (prop: string) => {
+  formItemContext?.validate(prop).catch((e) => { console.log(e.errors) })
+}
 
 const emit = defineEmits<InputEmits>()
 const attrs = useAttrs() as any
@@ -133,7 +136,7 @@ const handleUpdate = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
   emit('update:modelValue', target.value)
   emit('input', target.value)
-  formItemContext?.validate('input')
+  runValidate('input')
 }
 const handleChange = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
@@ -152,7 +155,7 @@ const handleFocus = (e: FocusEvent) => {
 const handleBlur = (e: FocusEvent) => {
   isFocus.value = false
   emit('blur', e)
-  formItemContext?.validate('blur')
+  runValidate('blur')
 }
 const clear = () => {
   emit('update:modelValue', '')
