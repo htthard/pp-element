@@ -34,6 +34,7 @@ import Schema from 'async-validator'
 defineOptions({ name: 'PpFormItem' })
 const props = defineProps<FormItemProps>()
 
+let initValue: any = null
 const formContext = inject(formContextKey)
 const innerValue = computed(() => {
   const model = formContext?.model
@@ -96,9 +97,25 @@ const validate = (trigger?: string) => {
   }
 }
 
+const clearValidate = () => {
+  validateStates.state = 'init'
+  validateStates.loading = false
+  validateStates.errorMsg = ''
+}
+
+const resetField = () => {
+  clearValidate()
+  const model = formContext?.model
+  if (model && props.prop && !isNil(model[props.prop])) {
+    model[props.prop] = initValue
+  }
+}
+
 const context: FormItemContext = {
   prop: props.prop || '',
-  validate
+  validate,
+  resetField,
+  clearValidate
 }
 
 provide(formItemContextKey, context)
@@ -106,6 +123,7 @@ provide(formItemContextKey, context)
 onMounted(() => {
   if (props.prop) {
     formContext?.addField(context)
+    initValue = innerValue.value
   }
 })
 onUnmounted(() => {

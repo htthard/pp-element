@@ -6,12 +6,12 @@ import Button from '@/components/Button/Button.vue'
 import { reactive, ref } from 'vue'
 
 const formData = reactive({
-  email: '',
-  password: '',
+  email: '1',
+  password: '1',
   test: '',
 })
 const rules = {
-  email: [{ required: true, type: 'email', trigger: 'blur' },{ required: true, type: 'string', trigger: 'input' }],
+  email: [{ required: true, trigger: 'blur' }],
   password: [{ required: true, trigger: 'blur' }],
   test: [{ required: true, trigger: 'blur' }],
 }
@@ -23,6 +23,10 @@ const validate = async () => {
   } catch (e) {
     console.log(e, 'e');
   }
+}
+
+const reset = () => {
+  formRef.value.resetFields()
 }
 </script>
 
@@ -45,7 +49,7 @@ const validate = async () => {
     </FormItem>
     <div>
       <Button type="primary" @click.prevent="validate">Submit</Button>
-      <button>Reset</button>
+      <button @click.prevent="reset">Reset</button>
     </div>
   </Form>
   form data

@@ -22,8 +22,20 @@ const removeField: FormContext['removeField'] = (field: FormItemContext) => {
   }
 }
 
+const clearValidates = (keys: string[] = []) => {
+  const filterArr = keys.length > 0 ? fields.filter(filed => keys.includes(filed.prop)) : fields
+  filterArr.forEach(field => {
+    field.clearValidate()
+  })
+}
+const resetFields = (keys: string[] = []) => {
+  const filterArr = keys.length > 0 ? fields.filter(filed => keys.includes(filed.prop)) : fields
+  filterArr.forEach(field => {
+    field.resetField()
+  })
+}
+
 const validate = async () => {
-  console.log(fields);
   let validationErrors: ValidateFieldsError = {}
   for (const field of fields) {
     try {
@@ -47,6 +59,8 @@ provide(formContextKey, {
 })
 
 defineExpose<FormInstance>({
-  validate
+  validate,
+  clearValidates,
+  resetFields
 })
 </script>
