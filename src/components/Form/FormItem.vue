@@ -18,7 +18,6 @@
         {{ validateStates.errorMsg }}
       </div>
     </div>
-    <button @click.prevent="validate">validate</button>
   </div>
 </template>
 <script setup lang="ts">
@@ -58,11 +57,25 @@ const validateStates = reactive({
   loading: false,
 })
 
-const validate = () => {
+const getTriggerRules = (trigger?: string) => {
+  const rules = itemRules.value
+  if (rules && rules.length > 0) {
+    return rules.filter(rule => {
+      if (!rule.trigger || !trigger) return true
+      return rule.trigger && rule.trigger === trigger
+    })
+  } else {
+    return []
+  }
+}
+
+const validate = (trigger?: string) => {
   const propName = props.prop
+  const triggerRules = getTriggerRules(trigger)
+  if (triggerRules.length === 0) return true
   if (propName) {
     const validator = new Schema({
-      [propName]: itemRules.value,
+      [propName]: triggerRules,
     })
     validateStates.loading = true
     validator

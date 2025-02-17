@@ -6,7 +6,11 @@ export interface FormItemProps {
   prop?: string
 }
 
-export type FormRules = Record<string, RuleItem[]>
+interface FormItemRule extends RuleItem {
+  trigger?: string
+}
+
+export type FormRules = Record<string, FormItemRule[]>
 
 export interface FormProps {
   model: Record<string, any>
@@ -15,7 +19,7 @@ export interface FormProps {
 
 export interface FormContext extends FormProps {}
 export interface FormItemContext {
-  validate: () => any
+  validate: (trigger?: string) => any
 }
 
 export interface FormValidateFailure {

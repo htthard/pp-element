@@ -133,6 +133,7 @@ const handleUpdate = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
   emit('update:modelValue', target.value)
   emit('input', target.value)
+  formItemContext?.validate('input')
 }
 const handleChange = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
@@ -151,7 +152,7 @@ const handleFocus = (e: FocusEvent) => {
 const handleBlur = (e: FocusEvent) => {
   isFocus.value = false
   emit('blur', e)
-  formItemContext?.validate()
+  formItemContext?.validate('blur')
 }
 const clear = () => {
   emit('update:modelValue', '')

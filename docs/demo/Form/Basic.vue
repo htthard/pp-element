@@ -11,7 +11,7 @@ const formData = reactive({
   test: '',
 })
 const rules = {
-  email: [{ required: true, type: 'email', trigger: 'blur' }],
+  email: [{ required: true, type: 'email', trigger: 'blur' },{ required: true, type: 'string', trigger: 'input' }],
   password: [{ required: true, trigger: 'blur' }],
   test: [{ required: true, trigger: 'blur' }],
 }
